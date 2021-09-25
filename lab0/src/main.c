@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "baseConversion.h"
+#include "badInputAssert.h"
 
 int main(int argc, char* argv[]) {
     unsigned b1 = 0;
@@ -14,9 +15,9 @@ int main(int argc, char* argv[]) {
         repr = argv[3];
     }
     else {
-        scanf("%ud", &b1);
-        scanf("%ud", &b2);
-        scanf("%s", repr, 14);
+        assert(scanf("%ud", &b1));
+        assert(scanf("%ud", &b2));
+        assert(scanf("%s", repr, 14));
     }
     BigFloat value;
     reprToValue(&value, repr, b1);

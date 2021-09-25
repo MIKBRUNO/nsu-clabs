@@ -1,13 +1,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "BigFloat.h"
-
-static void assert(unsigned cond) {
-	if (!cond) {
-		puts("bad input");
-		exit(EXIT_SUCCESS);
-	}
-}
+#include "badInputAssert.h"
 
 static int charToDigit(int c) {
 	c = tolower(c);
