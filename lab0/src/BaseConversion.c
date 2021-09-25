@@ -10,7 +10,7 @@ static int charToDigit(int c) {
 	else if (isalpha(c))
 		return 10 + (c - 'a');
 	else {
-		assert((unsigned)0);
+		assert(0);
 	}
 }
 
