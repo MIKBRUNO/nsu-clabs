@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     else {
         assert(scanf("%ud", &b1));
         assert(scanf("%ud", &b2));
-        assert(scanf("%s", repr, 14));
+        assert(scanf("%s", repr));
     }
     BigFloat value;
     reprToValue(&value, repr, b1);
