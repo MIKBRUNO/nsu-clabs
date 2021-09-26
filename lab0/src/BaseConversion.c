@@ -33,7 +33,7 @@ static void swap(char* pa, char* pb) {
 	*pb = b;
 }
 
-static unsigned strlen(char* str) {
+static unsigned stringLen(char* str) {
 	unsigned i = 0;
 	while (str[i] != '\0')
 		++i;
@@ -48,7 +48,7 @@ static void reverseString(char* arr, unsigned len) {
 	}
 }
 
-static double pow(double a, int p) {
+static double power(double a, int p) {
 	double res = 1;
 	if (p >= 0) {
 		int i = 0;
@@ -69,7 +69,7 @@ static double pow(double a, int p) {
 }
 
 void reprToValue(BigFloat* res, char* repr, unsigned base) {
-	unsigned len = strlen(repr);
+	unsigned len = stringLen(repr);
 	assert((base <= 16) && (base >= 2) && (len <= 13) && (len >= 1));
 	BigFloat number = { 0, 0 };
 	unsigned i = 0;
@@ -92,7 +92,7 @@ void reprToValue(BigFloat* res, char* repr, unsigned base) {
 			number.fractional += digit;
 			++i;
 		}
-		number.fractional = number.fractional / pow(base, fractionalLen);
+		number.fractional = number.fractional / power(base, fractionalLen);
 	}
 	*res = number;
 }
