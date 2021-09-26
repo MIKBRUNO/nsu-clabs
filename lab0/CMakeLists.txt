@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(lab0 C)
 
-set(SRC src/main.c src/baseConversion.c src/badInputAssert.c)
+set(SRC src/main.c src/BaseConversion.c src/badInputAssert.c)
 
 add_executable(${PROJECT_NAME} ${SRC})
 
