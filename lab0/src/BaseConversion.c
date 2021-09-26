@@ -15,22 +15,19 @@ static int charToDigit(int c) {
 	return c;
 }
 
-static char digitToChar(char d) {
+static char digitToChar(unsigned d) {
 	if (d < 10)
-		return '0' + d;
+		return '0' + (char)d;
 	else {
-		return (d - 10) + 'a';
+		return (char)(d - 10) + 'a';
 	}
 }
 
 static void swap(char* pa, char* pb) {
 	char a = *pa;
 	char b = *pb;
-	char c = a + b;
-	a = c - a;
-	b = c - a;
-	*pa = a;
-	*pb = b;
+	*pa = b;
+	*pb = a;
 }
 
 static unsigned stringLen(char* str) {
@@ -40,10 +37,10 @@ static unsigned stringLen(char* str) {
 	return i;
 }
 
-static void reverseString(char* arr, unsigned len) {
+static void reverseString(char* str, unsigned len) {
 	unsigned i = 0;
 	while (i < len / 2) {
-		swap(&(arr[i]), &(arr[(len - 1) - i]));
+		swap(&(str[i]), &(str[(len - 1) - i]));
 		++i;
 	}
 }
@@ -97,30 +94,30 @@ void reprToValue(BigFloat* res, char* repr, unsigned base) {
 	*res = number;
 }
 
-void valueToRepr(char* repr, BigFloat *value, unsigned base) {
+void valueToRepr(char* res, BigFloat *value, unsigned base) {
 	assert((base <= 16) && (base >= 2));
 	unsigned long long integer = value -> integer;
 	double fractional = value -> fractional;
 	unsigned i = 0;
 	do {
-		repr[i] = digitToChar((char)(integer % base));
+		res[i] = digitToChar(integer % base);
 		integer /= base;
 		++i;
 	} while (integer > 0);
 	unsigned intLen = i;
-	reverseString(repr, intLen);
+	reverseString(res, intLen);
 	if (fractional != 0.) {
-		repr[i] = '.';
+		res[i] = '.';
 		while ((fractional > 0) && ((i - intLen) <= 12)) {
 			++i;
 			fractional *= base;
 			unsigned digit = (int)fractional;
 			fractional -= digit;
-			repr[i] = digitToChar((char)digit);
+			res[i] = digitToChar((char)digit);
 		}
-		while (repr[i] == '0')
+		while (res[i] == '0')
 			--i;
 		++i;
 	}
-	repr[i] = '\0';
+	res[i] = '\0';
 }
