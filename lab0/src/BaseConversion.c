@@ -6,15 +6,16 @@
 static int charToDigit(int c) {
 	c = tolower(c);
 	if (isdigit(c))
-		return 0 + (c - '0');
+		c = 0 + (c - '0');
 	else if (isalpha(c))
-		return 10 + (c - 'a');
+		c = 10 + (c - 'a');
 	else {
 		assert(0);
 	}
+	return c;
 }
 
-static char digitToChar(unsigned d) {
+static char digitToChar(char d) {
 	if (d < 10)
 		return '0' + d;
 	else {
@@ -32,8 +33,15 @@ static void swap(char* pa, char* pb) {
 	*pb = b;
 }
 
+static unsigned strlen(char* str) {
+	unsigned i = 0;
+	while (str[i] != '\0')
+		++i;
+	return i;
+}
+
 static void reverseString(char* arr, unsigned len) {
-	int i = 0;
+	unsigned i = 0;
 	while (i < len / 2) {
 		swap(&(arr[i]), &(arr[(len - 1) - i]));
 		++i;
@@ -84,7 +92,7 @@ void reprToValue(BigFloat* res, char* repr, unsigned base) {
 			number.fractional += digit;
 			++i;
 		}
-		number.fractional = number.fractional / pow(base, (double)fractionalLen);
+		number.fractional = number.fractional / pow(base, fractionalLen);
 	}
 	*res = number;
 }
@@ -95,7 +103,7 @@ void valueToRepr(char* repr, BigFloat *value, unsigned base) {
 	double fractional = value -> fractional;
 	unsigned i = 0;
 	do {
-		repr[i] = digitToChar(integer % base);
+		repr[i] = digitToChar((char)(integer % base));
 		integer /= base;
 		++i;
 	} while (integer > 0);
@@ -108,7 +116,7 @@ void valueToRepr(char* repr, BigFloat *value, unsigned base) {
 			fractional *= base;
 			unsigned digit = (int)fractional;
 			fractional -= digit;
-			repr[i] = digitToChar(digit);
+			repr[i] = digitToChar((char)digit);
 		}
 		while (repr[i] == '0')
 			--i;
