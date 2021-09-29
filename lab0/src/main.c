@@ -5,8 +5,8 @@
 #include "badInputAssert.h"
 
 int main(int argc, char* argv[]) {
-    unsigned b1 = 0;
-    unsigned b2 = 0;
+    unsigned int b1 = 0;
+    unsigned int b2 = 0;
     char str[14];
     char* repr = str;
     if (4 == argc) {
