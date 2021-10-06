@@ -1,7 +1,5 @@
 #include <ctype.h>
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include "BigFloat.h"
 #include "badInputAssert.h"
 
@@ -25,6 +23,33 @@ static char digitToChar(unsigned int d) {
 	}
 }
 
+static unsigned stringLen(char* str) {
+	unsigned i = 0;
+	while (str[i] != '\0')
+		++i;
+	return i;
+}
+
+static double power(double a, int p) {
+	double res = 1;
+	if (p >= 0) {
+		int i = 0;
+		while (i < p) {
+			res *= a;
+			++i;
+		}
+	}
+	else {
+		p = abs(p);
+		int i = 0;
+		while (i < p) {
+			res /= a;
+			++i;
+		}
+	}
+	return res;
+}
+
 static void reverseString(char* str, unsigned int len) {
 	unsigned int i = 0;
 	while (i < len / 2) {
@@ -36,7 +61,7 @@ static void reverseString(char* str, unsigned int len) {
 }
 
 void reprToValue(BigFloat* res, char* repr, unsigned int base) {
-	unsigned int len = strlen(repr);
+	unsigned int len = stringLen(repr);
 	assert((base <= 16) && (base >= 2) && (len <= 13) && (len >= 1));
 	BigFloat number = { 0, 0 };
 	unsigned int i = 0;
@@ -59,7 +84,7 @@ void reprToValue(BigFloat* res, char* repr, unsigned int base) {
 			number.fractional += digit;
 			++i;
 		}
-		number.fractional = number.fractional / pow(base, fractionalLen);
+		number.fractional = number.fractional / power(base, fractionalLen);
 	}
 	*res = number;
 }
