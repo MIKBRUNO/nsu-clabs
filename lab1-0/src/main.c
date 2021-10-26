@@ -6,7 +6,8 @@
 
 int main(void) {
     char sample[SAMPLE_LEN + 2] = "";
-    fgets(sample, SAMPLE_LEN + 2, stdin);
+    if (!fgets(sample, SAMPLE_LEN + 2, stdin))
+        exit(0);
     unsigned int sampleLen = strlen(sample) - 1;
     sample[sampleLen] = 0;
 
