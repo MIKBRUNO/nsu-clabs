@@ -36,7 +36,7 @@ void strToSearchState(const char* str, BMSearchState* state) {
 	}
 	i = 0;
 	while (i < len - 1) {
-		shift[(unsigned int)str[i]] = len - i - 1;
+		shift[(int)(str[i])] = len - i - 1;
 		++i;
 	}
 }
@@ -64,8 +64,8 @@ unsigned int findSubString(const char* sample, const char* text, unsigned int te
 			globalIdx += state.len;
 		}
 		else {
-			globalIdx += state.shift[(unsigned int)text[sampleIdx]];
-			sampleIdx += state.shift[(unsigned int)text[sampleIdx]];
+			globalIdx += state.shift[(int)(text[sampleIdx])];
+			sampleIdx += state.shift[(int)(text[sampleIdx])];
 		}
 	}
 	return globalIdx;
