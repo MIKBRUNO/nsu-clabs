@@ -4,17 +4,15 @@
 #include "BoyerMoore.h"
 
 int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap) {
-	size_t i = 0;
 	unsigned int count = maxLen;
 	if (partLen > overlap) {
-		unsigned int j = 0;
+		size_t j = 0;
 		while (j < overlap) {
 			part[j] = part[partLen - overlap + j];
 			++j;
 		}
-		i = j;
 		count = maxLen - overlap;
-		return fread(part + i, sizeof(char), count, stdin) + overlap;
+		return fread(part + j, sizeof(char), count, stdin) + overlap;
 	}
 	else
 		return fread(part, sizeof(char), count, stdin);
@@ -56,7 +54,7 @@ unsigned int findSubString(const char* sample, const char* text, unsigned int te
 	while (sampleIdx < textLen) {
 		unsigned int i = 0;
 		while (i < state.len) {
-			printf("%d ", globalIdx - i + 1);
+			printf("%u ", globalIdx - i + 1u);
 			if (!(text[sampleIdx - i] == sample[state.len - i - 1]))
 				break;
 			++i;
