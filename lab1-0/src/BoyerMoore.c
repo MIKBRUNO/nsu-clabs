@@ -3,13 +3,19 @@
 #include <string.h>
 #include "BoyerMoore.h"
 
-unsigned int readNextPart(char* part, unsigned int partLen, unsigned int overlap) {
-	size_t j = 0;
-	while (j < overlap) {
-		part[j] = part[partLen - overlap + j];
-		++j;
+unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap) {
+	unsigned int count = maxLen;
+	if (partLen > overlap) {
+		size_t j = 0;
+		while (j < overlap) {
+			part[j] = part[partLen - overlap + j];
+			++j;
+		}
+		count = maxLen - overlap;
+		return fread(part + j, sizeof(char), count, stdin) + overlap;
 	}
-	return fread(part + j, sizeof(char), partLen - overlap, stdin) + overlap;
+	else
+		return fread(part, sizeof(char), count, stdin);
 }
 
 void strToSearchState(const char* str, BMSearchState* state) {
