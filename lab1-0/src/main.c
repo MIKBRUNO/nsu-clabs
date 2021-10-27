@@ -7,16 +7,18 @@
 int main(void) {
     char sample[SAMPLE_LEN + 2] = "";
     if (!fgets(sample, SAMPLE_LEN + 2, stdin))
-        exit(0);
+        return EXIT_SUCCESS;
     unsigned int sampleLen = strlen(sample) - 1;
     sample[sampleLen] = 0;
+    BMSearchState state;
+    strToSearchState(sample, &state);
 
     char textPart[TEXTBUFFER_LEN] = "";
-    unsigned int startPos = sampleLen - 1;
-    unsigned int textLen = 0;
-    do {
-        textLen = readNextPart(textPart, textLen, TEXTBUFFER_LEN, SAMPLE_LEN - 1);
-        startPos = findSubString(sample, textPart, textLen, startPos);
-    } while (textLen == TEXTBUFFER_LEN);
+    unsigned int textLen = fread(textPart, sizeof(char), TEXTBUFFER_LEN, stdin);
+    unsigned int startPos = findSubString(&state, textPart, textLen, sampleLen - 1);
+    while (textLen == TEXTBUFFER_LEN) {
+        textLen = readNextPart(textPart, TEXTBUFFER_LEN, SAMPLE_LEN - 1);
+        startPos = findSubString(&state, textPart, textLen, startPos);
+    }
     return EXIT_SUCCESS;
 }
