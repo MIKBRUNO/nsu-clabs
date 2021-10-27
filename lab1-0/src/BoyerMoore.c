@@ -38,9 +38,8 @@ unsigned int findSubString(const BMSearchState* statePtr, const char* text, unsi
 	unsigned int globalIdx = startPos;
 	unsigned int sampleIdx = localIdx(globalIdx, state.len - 1);
 	sampleIdx = sampleIdx >= state.len - 1 ? sampleIdx : state.len - 1;
-	unsigned int i = 0;
 	while (sampleIdx < textLen) {
-		i = 0;
+		unsigned int i = 0;
 		while (i < state.len) {
 			printf("%u ", globalIdx - i + 1);
 			if (!(text[sampleIdx - i] == state.sample[state.len - i - 1]))

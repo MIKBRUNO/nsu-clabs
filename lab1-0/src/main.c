@@ -14,7 +14,7 @@ int main(void) {
     strToSearchState(sample, &state);
 
     char textPart[TEXTBUFFER_LEN] = "";
-    unsigned int textLen = fread(textPart, sizeof(char), TEXTBUFFER_LEN, stdin);
+    unsigned int textLen = fread(&textPart, sizeof(char), TEXTBUFFER_LEN, stdin);
     unsigned int startPos = findSubString(&state, textPart, textLen, sampleLen - 1);
     while (textLen == TEXTBUFFER_LEN) {
         textLen = readNextPart(textPart, TEXTBUFFER_LEN, SAMPLE_LEN - 1);
