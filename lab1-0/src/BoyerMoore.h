@@ -5,5 +5,12 @@ enum {
 	TEXTBUFFER_LEN = 128
 };
 
-extern unsigned int findSubString(const char* sample, const char* text, unsigned int textLen, unsigned int startPos);
-extern int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap);
+typedef struct {
+	const char* sample;
+	unsigned int len;
+	unsigned int shift[256];
+} BMSearchState;
+
+extern unsigned int findSubString(const BMSearchState* state, const char* text, unsigned int textLen, unsigned int startPos);
+extern unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap);
+extern void strToSearchState(const char* str, BMSearchState* state);
