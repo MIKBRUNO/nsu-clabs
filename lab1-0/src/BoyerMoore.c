@@ -3,7 +3,7 @@
 #include <string.h>
 #include "BoyerMoore.h"
 
-unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap) {
+int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap) {
 	unsigned int count = maxLen;
 	if (partLen > overlap) {
 		size_t j = 0;
@@ -17,6 +17,12 @@ unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen,
 	else
 		return fread(part, sizeof(char), count, stdin);
 }
+
+typedef struct {
+	const char* sample;
+	unsigned int len;
+	unsigned int shift[256];
+} BMSearchState;
 
 void strToSearchState(const char* str, BMSearchState* state) {
 	state->sample = str;
@@ -39,8 +45,9 @@ static inline unsigned int localIdx(unsigned int globalIdx, unsigned int overlap
 	return globalIdx < TEXTBUFFER_LEN ? globalIdx : (globalIdx - TEXTBUFFER_LEN) % (TEXTBUFFER_LEN - overlap) + overlap;
 }
 
-unsigned int findSubString(const BMSearchState* sampleState, const char* text, unsigned int textLen, unsigned int startPos) {
-	BMSearchState state = *sampleState;
+unsigned int findSubString(const char* sample, const char* text, unsigned int textLen, unsigned int startPos) {
+	BMSearchState state;
+	strToSearchState(sample, &state);
 	unsigned int globalIdx = startPos;
 	unsigned int sampleIdx = localIdx(globalIdx, state.len - 1);
 	sampleIdx = sampleIdx >= state.len - 1 ? sampleIdx : state.len - 1;
@@ -48,7 +55,7 @@ unsigned int findSubString(const BMSearchState* sampleState, const char* text, u
 		unsigned int i = 0;
 		while (i < state.len) {
 			printf("%u ", globalIdx - i + 1u);
-			if (!(text[sampleIdx - i] == state.sample[state.len - i - 1]))
+			if (!(text[sampleIdx - i] == sample[state.len - i - 1]))
 				break;
 			++i;
 		}
