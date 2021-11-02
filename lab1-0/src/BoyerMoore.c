@@ -39,15 +39,15 @@ static inline unsigned int localIdx(unsigned int globalIdx, unsigned int overlap
 	return globalIdx < TEXTBUFFER_LEN ? globalIdx : (globalIdx - TEXTBUFFER_LEN) % (TEXTBUFFER_LEN - overlap) + overlap;
 }
 
-unsigned int findSubString(const BMSearchState* statePtr, const char* text, unsigned int textLen, unsigned int startPos) {
-	BMSearchState state = *statePtr;
+unsigned int findSubString(const BMSearchState* sampleState, const char* text, unsigned int textLen, unsigned int startPos) {
+	BMSearchState state = *sampleState;
 	unsigned int globalIdx = startPos;
 	unsigned int sampleIdx = localIdx(globalIdx, state.len - 1);
 	sampleIdx = sampleIdx >= state.len - 1 ? sampleIdx : state.len - 1;
 	while (sampleIdx < textLen) {
 		unsigned int i = 0;
 		while (i < state.len) {
-			printf("%u ", globalIdx - i + 1);
+			printf("%u ", globalIdx - i + 1u);
 			if (!(text[sampleIdx - i] == state.sample[state.len - i - 1]))
 				break;
 			++i;

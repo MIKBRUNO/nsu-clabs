@@ -11,6 +11,6 @@ typedef struct {
 	unsigned int shift[256];
 } BMSearchState;
 
+extern void strToSearchState(const char* str, BMSearchState* state);
 extern unsigned int findSubString(const BMSearchState* state, const char* text, unsigned int textLen, unsigned int startPos);
 extern unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap);
-extern void strToSearchState(const char* str, BMSearchState* state);

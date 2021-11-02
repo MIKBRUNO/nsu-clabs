@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <locale.h>
 #include "BoyerMoore.h"
 
 int main(void) {
-    setlocale(LC_ALL, "Russian");
     char sample[SAMPLE_LEN + 2] = "";
     if (!fgets(sample, SAMPLE_LEN + 2, stdin))
-        return EXIT_SUCCESS;
+        exit(0);
     unsigned int sampleLen = strlen(sample) - 1;
     sample[sampleLen] = 0;
     BMSearchState state;
