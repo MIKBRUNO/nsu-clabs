@@ -6,7 +6,6 @@
 #include "BoyerMoore.h"
 
 int main(void) {
-    setlocale(LC_ALL, "Russian");
     char sample[SAMPLE_LEN + 2] = "";
     if (!fgets(sample, SAMPLE_LEN + 2, stdin))
         return EXIT_SUCCESS;
