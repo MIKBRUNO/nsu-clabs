@@ -3,15 +3,13 @@
 #include <string.h>
 #include "BoyerMoore.h"
 
-unsigned int readNextPart(char* part, unsigned int partLen, unsigned int maxLen, unsigned int overlap) {
-	unsigned int count = maxLen;
+unsigned int readNextPart(char* part, unsigned int partLen, unsigned int overlap) {
 	if (partLen > overlap) {
 		memcpy(part, part + partLen - overlap, overlap);
-		count = maxLen - overlap;
-		return fread(part + overlap, sizeof(char), count, stdin) + overlap;
+		return fread(part + overlap, sizeof(char), TEXTBUFFER_LEN - overlap, stdin) + overlap;
 	}
 	else
-		return fread(part, sizeof(char), count, stdin);
+		return fread(part, sizeof(char), TEXTBUFFER_LEN, stdin);
 }
 
 void strToSearchState(const char* str, BMSearchState* state) {
@@ -35,27 +33,38 @@ static inline unsigned int localIdx(unsigned int globalIdx, unsigned int overlap
 	return globalIdx < TEXTBUFFER_LEN ? globalIdx : (globalIdx - TEXTBUFFER_LEN) % (TEXTBUFFER_LEN - overlap) + overlap;
 }
 
-unsigned int findSubString(const BMSearchState* statePtr, const char* text, unsigned int textLen, unsigned int startPos) {
-	BMSearchState state = *statePtr;
-	unsigned int globalIdx = startPos;
-	unsigned int sampleIdx = localIdx(globalIdx, state.len - 1);
-	sampleIdx = sampleIdx >= state.len - 1 ? sampleIdx : state.len - 1;
+static char* utoa10(unsigned int u, char* buf) {
+	int i = 0;
+	buf[9] = 0;
+	while (u > 0) {
+		buf[8 - i] = '0' + (u % 10);
+		u /= 10;
+		++i;
+	}
+	return buf + 9 - i;
+}
+
+unsigned int findSubString(const BMSearchState* state, const char* text, unsigned int textLen, unsigned int startPos) {
+	unsigned int sampleIdx = state->len - 1;
+	unsigned int shift = 0;
 	while (sampleIdx < textLen) {
 		unsigned int i = 0;
-		while (i < state.len) {
-			printf("%u ", globalIdx - i + 1);
-			if (!(text[sampleIdx - i] == state.sample[state.len - i - 1]))
+		while (i < state->len) {
+			char buf[10];
+			fputs(utoa10(sampleIdx + startPos - i + 1, buf), stdout);
+			fputs(" ", stdout);
+			if (!(text[sampleIdx - i] == state->sample[state->len - i - 1]))
 				break;
 			++i;
 		}
-		if (i == state.len) {
-			sampleIdx += state.len;
-			globalIdx += state.len;
+		if (i == state->len) {
+			shift = state->len;
+			sampleIdx += shift;
 		}
 		else {
-			globalIdx += state.shift[(unsigned char)(text[sampleIdx])];
-			sampleIdx += state.shift[(unsigned char)(text[sampleIdx])];
+			shift = state->shift[(unsigned char)(text[sampleIdx])];
+			sampleIdx += shift;
 		}
 	}
-	return globalIdx;
+	return sampleIdx + 1 - state->len;
 }
