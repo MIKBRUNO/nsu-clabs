@@ -29,10 +29,6 @@ void strToSearchState(const char* str, BMSearchState* state) {
 	}
 }
 
-static inline unsigned int localIdx(unsigned int globalIdx, unsigned int overlap) {
-	return globalIdx < TEXTBUFFER_LEN ? globalIdx : (globalIdx - TEXTBUFFER_LEN) % (TEXTBUFFER_LEN - overlap) + overlap;
-}
-
 static char* utoa10(unsigned int u, char* buf) {
 	int i = 0;
 	buf[9] = 0;
