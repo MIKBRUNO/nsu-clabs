@@ -1,7 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #define TEMPLATE_LEN 16
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 2048
 
 typedef struct Template_s Template;
 struct Template_s {
