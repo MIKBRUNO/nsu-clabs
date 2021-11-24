@@ -15,7 +15,7 @@ int main(void) {
 
 	char buf[BUFFER_SIZE];
 	size_t textSize = fread(buf, 1, BUFFER_SIZE, stdin);
-	printf("%u ", template.hash);
+	printf("%u ", (unsigned int)template.hash);
 	size_t idx = 0;
 	idx = searchTemplate(&template, buf, textSize, idx, hash);
 	while (BUFFER_SIZE == textSize) {
