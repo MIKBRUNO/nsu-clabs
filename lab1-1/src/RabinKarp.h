@@ -1,7 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #define TEMPLATE_LEN 16
-#define BUFFER_SIZE 2048
+#define BUFFER_SIZE 4096
 
 typedef struct Template_s Template;
 struct Template_s {
@@ -9,10 +9,9 @@ struct Template_s {
 	size_t len;
 	size_t hash;
 };
-extern void createTemplate(Template* t, const char* string, const size_t size, size_t(*hash)(const char* str, const size_t size));
+extern void createTemplate(Template* t, const char* string, const size_t size);
 
-extern size_t hash(const char* str, const size_t size);
 extern size_t searchTemplate(
 	const Template* template,
-	const char* text, size_t textSize, size_t idx,
-	size_t(*hash)(const char* str, const size_t size));
+	const char* text, size_t textSize,
+	size_t idx);
