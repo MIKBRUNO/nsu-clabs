@@ -22,8 +22,10 @@ int main(void) {
 	size_t N = atoi(buf);
 	
 	int* arr;
-	if (NULL == (arr = malloc(sizeof(int) * N)))
+	if (NULL == (arr = malloc(sizeof(int) * N))) {
+		free(arr);
 		return EXIT_SUCCESS;
+	}
 	for (size_t i = 0; i < N; ++i) {
 		arr[i] = readInt(buf, stdin);
 	}
