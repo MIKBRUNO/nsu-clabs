@@ -23,8 +23,7 @@ int main(void) {
 	
 	int* arr;
 	if (NULL == (arr = malloc(sizeof(int) * N))) {
-		free(arr);
-		return EXIT_SUCCESS;
+		exit(EXIT_SUCCESS);
 	}
 	for (size_t i = 0; i < N; ++i) {
 		arr[i] = readInt(buf, stdin);
