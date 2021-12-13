@@ -5,8 +5,8 @@
 #include "QuickSort.h"
 
 int main(void) {
-	size_t n;
-	if (!scanf("%d", &n)) {
+	unsigned int n;
+	if (!scanf("%ud", &n)) {
 		exit(EXIT_SUCCESS);
 	}
 
