@@ -1,12 +1,10 @@
 #include <stdlib.h>
 
 void quickSort(int* arr, size_t size) {
-	size_t l, r;
-	int m;
 	while (1 < size) {
-		l = 0u;
-		r = size - 1u;
-		m = (arr[r] + arr[l]) / 2;
+		size_t l = 0u,
+			r = size - 1u;
+		int m = (arr[r] + arr[l]) / 2;
 		while (arr[l] < m)
 			++l;
 		while (arr[r] > m)
