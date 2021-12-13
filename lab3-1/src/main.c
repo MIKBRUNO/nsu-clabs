@@ -24,5 +24,7 @@ int main(void) {
 		printf("%d ", arr[i]);
 	}
 
+	free(arr);
+
 	return EXIT_SUCCESS;
 }
