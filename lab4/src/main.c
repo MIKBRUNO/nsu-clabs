@@ -11,7 +11,7 @@ int main(void) {
 
 	createRPN(buf, rpn, size);
 	size = strlen(rpn);
-	if (0 >= size) {
+	if (0 == size) {
 		fputs("syntax error", stdout);
 		exit(0);
 	}

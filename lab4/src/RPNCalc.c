@@ -41,7 +41,7 @@ static inline void syntaxErr() {
 #endif
 
 void createRPN(char* src, char* dst, size_t size) {
-	int stack[BUF_SIZE];
+	int stack[BUF_SIZE]; stack[0] = 0;
 	Stack op = { stack, 0 };
 	size_t di = 0;
 	for (size_t i = 0; i < size; ++i) {
@@ -103,7 +103,7 @@ void createRPN(char* src, char* dst, size_t size) {
 }
 
 int evalRPN(char* rpn, size_t size) {
-	int arr[BUF_SIZE];
+	int arr[BUF_SIZE]; arr[0] = 0;
 	Stack stack = { arr, 0 };
 	size_t i = 0;
 	while (i < size) {
