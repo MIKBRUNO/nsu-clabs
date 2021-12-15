@@ -12,7 +12,7 @@ int main(void) {
 	createRPN(buf, rpn, size);
 	size = strlen(rpn);
 	if (0 == size) {
-		fputs("syntax error", stdout);
+		fputs("syntax error\n", stdout);
 		exit(0);
 	}
 	int res = evalRPN(rpn, size);

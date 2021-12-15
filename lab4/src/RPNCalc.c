@@ -4,7 +4,7 @@
 #include "RPNCalc.h"
 #include "Stack.h"
 
-#define syntaxErr() { fputs("syntax error", stdout); exit(EXIT_SUCCESS); }
+#define syntaxErr() { fputs("syntax error\n", stdout); exit(EXIT_SUCCESS); }
 
 static inline int isop1(int c) {
 	return ((c == '+') || (c == '-'));
@@ -26,7 +26,7 @@ static inline int eval(int a, int b, int action) {
 			return a / b;
 		}
 		else {
-			fputs("division by zero", stdout);
+			fputs("division by zero\n", stdout);
 			exit(EXIT_SUCCESS);
 		}
 	else
