@@ -7,7 +7,7 @@ struct Stack_s {
 	size_t size;
 };
 
-extern inline void push(Stack* stack, int val);
-extern inline int pop(Stack* stack);
-extern inline int head(Stack* stack);
-extern inline int isEmpty(Stack* stack);
+extern void push(Stack* stack, int val);
+extern int pop(Stack* stack);
+extern int head(Stack* stack);
+extern int isEmpty(Stack* stack);
