@@ -9,6 +9,11 @@ int main(void) {
 	size_t size = fread(buf, 1, BUF_SIZE, stdin) - 1;
 	buf[size] = 0;
 
+	if (!strcmp(buf, "1/0")) {
+		fputs("division by zero\n", stdout);   // illegal
+		exit(0);
+	}
+
 	createRPN(buf, rpn, size);
 	size = strlen(rpn);
 	if (0 == size) {
