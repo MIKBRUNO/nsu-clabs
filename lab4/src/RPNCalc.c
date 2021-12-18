@@ -33,13 +33,6 @@ static inline int eval(int a, int b, int action) {
 		syntaxErr();
 }
 
-#if 0
-static inline void syntaxErr() {
-	fputs("syntax error", stdout);
-	exit(EXIT_SUCCESS);
-}
-#endif
-
 void createRPN(char* src, char* dst, size_t size) {
 	int stack[BUF_SIZE]; stack[0] = 0;
 	Stack op = { stack, 0 };
@@ -119,14 +112,14 @@ int evalRPN(char* rpn, size_t size) {
 		}
 		else {
 			if (stack.size > 1) {
-				int a = eval(pop(&stack), pop(&stack), rpn[i]);
+				int a = pop(&stack);
+				a = eval(pop(&stack), a, rpn[i]);
 				push(&stack, a);
 				i += 2;
 			}
 			else {
 				syntaxErr();
 			}
-
 		}
 	}
 	int res = pop(&stack);
