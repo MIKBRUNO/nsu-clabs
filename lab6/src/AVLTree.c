@@ -4,11 +4,11 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
-inline size_t height(Node* elem) {
+inline unsigned int height(Node* elem) {
 	return (NULL != elem) ? elem->height : 0;
 }
 
-static inline Node* rotTree(Node* tree, size_t idx) {
+static inline Node* rotTree(Node* tree, unsigned int idx) {
 	Node* newRoot = tree->link[idx];
 	tree->link[idx] = newRoot->link[!idx];
 	tree->height = max(height(tree->link[0]), height(tree->link[1])) + 1;
@@ -22,7 +22,7 @@ Node* insert(Node* elem, Node* tree) {
 		return tree;
 	if (NULL == tree)
 		return elem;
-	size_t idx = (elem->value >= tree->value);
+	unsigned int idx = (elem->value >= tree->value);
 	tree->link[idx] = insert(elem, tree->link[idx]);
 	tree->height = max(height(tree->link[0]), height(tree->link[1])) + 1;
 

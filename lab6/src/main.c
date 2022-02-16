@@ -10,8 +10,9 @@ int main(void) {
 	if (0 == (place = malloc(sizeof(Node) * count)))
 		exit(0);
 	Node* root = NULL;
+	Node* elem;
 	for (size_t i = 0; i < count; ++i) {
-		Node* elem = place + i;	
+		elem = place + i;	
 		if (0 == scanf("%d", &(elem->value)))
 			return 0;
 		elem->height = 1;

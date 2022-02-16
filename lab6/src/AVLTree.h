@@ -4,9 +4,9 @@
 typedef struct Node_s Node;
 struct Node_s {
 	Node* link[2];
-	size_t height;
+	unsigned int height;
 	int value;
 };
 
-size_t height(Node* elem);
+unsigned int height(Node* elem);
 Node* insert(Node* elem, Node* tree);
