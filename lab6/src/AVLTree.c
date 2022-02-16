@@ -26,12 +26,13 @@ Node* insert(Node* elem, Node* tree) {
 	tree->link[idx] = insert(elem, tree->link[idx]);
 	tree->height = max(height(tree->link[0]), height(tree->link[1])) + 1;
 
-	if (abs(height(tree->link[idx]) - height(tree->link[!idx])) > 1)
+	if ((1 < height(tree)) && (abs(height(tree->link[idx]) - height(tree->link[!idx])) > 1)) {
 		if (height((tree->link[idx])->link[idx]) > height((tree->link[idx])->link[!idx]))
 			tree = rotTree(tree, idx);
 		else {
 			tree->link[idx] = rotTree(tree->link[idx], !idx);
-			tree = rotTree(tree, idx);	
+			tree = rotTree(tree, idx);
 		}
+	}
 	return tree;
 }
