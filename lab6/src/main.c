@@ -19,7 +19,7 @@ int main(void) {
 		elem->link[1] = NULL;
 		root = insert(elem, root);
 	}
-	printf("%u\n", height(root));
+	printf("%u\n", (unsigned int)height(root));
 
 	free(place);
 	return 0;
