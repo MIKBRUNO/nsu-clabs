@@ -1,7 +1,7 @@
 #include "AVLTree.h"
 
 #ifndef max
-#define max(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
 inline size_t height(Node* elem) {
