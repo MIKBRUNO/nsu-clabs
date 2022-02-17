@@ -26,10 +26,10 @@ void insert(Node* elem, Node** tree) {
 	}
 	unsigned int idx = (elem->value >= (*tree)->value);
 	insert(elem, &((*tree)->link[idx]));
-	(*tree)->height = max(height((*tree)->link[0]), height((*tree)->link[1])) + 1;
-	int bfactor = (int)height((*tree)->link[idx]) - (int)height((*tree)->link[!idx]);
+	unsigned int maxIdx = height((*tree)->link[0]) > height((*tree)->link[1]) ? 0 : 1;
+	(*tree)->height = height((*tree)->link[maxIdx]) + 1;
 
-	if ((1 < height(*tree)) && (1 < bfactor)) {
+	if ((1 < height(*tree)) && (1 < (height((*tree)->link[maxIdx]) - height((*tree)->link[!maxIdx])))) {
 		if (height(((*tree)->link[idx])->link[idx]) > height(((*tree)->link[idx])->link[!idx]))
 			rotTree(tree, idx);
 		else {
