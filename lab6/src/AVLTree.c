@@ -8,31 +8,33 @@ inline unsigned int height(Node* elem) {
 	return (NULL != elem) ? elem->height : 0;
 }
 
-static inline Node* rotTree(Node* tree, unsigned int idx) {
-	Node* newRoot = tree->link[idx];
-	tree->link[idx] = newRoot->link[!idx];
-	tree->height = max(height(tree->link[0]), height(tree->link[1])) + 1;
-	newRoot->link[!idx] = tree;
+static void rotTree(Node** tree, unsigned int idx) {
+	Node* newRoot = (*tree)->link[idx];
+	(*tree)->link[idx] = newRoot->link[!idx];
+	(*tree)->height = max(height((*tree)->link[0]), height((*tree)->link[1])) + 1;
+	newRoot->link[!idx] = (*tree);
 	newRoot->height = max(height(newRoot->link[0]), height(newRoot->link[1])) + 1;
-	return newRoot;
+	(*tree) = newRoot;
 }
 
-Node* insert(Node* elem, Node* tree) {
+void insert(Node* elem, Node** tree) {
 	if (NULL == elem)
-		return tree;
-	if (NULL == tree)
-		return elem;
-	unsigned int idx = (elem->value >= tree->value);
-	tree->link[idx] = insert(elem, tree->link[idx]);
-	tree->height = max(height(tree->link[0]), height(tree->link[1])) + 1;
+		return;
+	if (NULL == *tree) {
+		(*tree) = elem;
+		return;
+	}
+	unsigned int idx = (elem->value >= (*tree)->value);
+	insert(elem, &((*tree)->link[idx]));
+	(*tree)->height = max(height((*tree)->link[0]), height((*tree)->link[1])) + 1;
+	int bfactor = (int)height((*tree)->link[idx]) - (int)height((*tree)->link[!idx]);
 
-	if ((1 < height(tree)) && (abs((int)height(tree->link[idx]) - (int)height(tree->link[!idx])) > 1)) {
-		if (height((tree->link[idx])->link[idx]) > height((tree->link[idx])->link[!idx]))
-			tree = rotTree(tree, idx);
+	if ((1 < height(*tree)) && (1 < bfactor)) {
+		if (height(((*tree)->link[idx])->link[idx]) > height(((*tree)->link[idx])->link[!idx]))
+			rotTree(tree, idx);
 		else {
-			tree->link[idx] = rotTree(tree->link[idx], !idx);
-			tree = rotTree(tree, idx);
+			rotTree(&((*tree)->link[idx]), !idx);
+			rotTree(tree, idx);
 		}
 	}
-	return tree;
 }

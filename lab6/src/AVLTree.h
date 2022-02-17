@@ -9,4 +9,4 @@ struct Node_s {
 };
 
 unsigned int height(Node* elem);
-Node* insert(Node* elem, Node* tree);
+void insert(Node* elem, Node** tree);

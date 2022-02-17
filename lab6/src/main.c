@@ -17,7 +17,7 @@ int main(void) {
 		elem->height = 1;
 		elem->link[0] = NULL;
 		elem->link[1] = NULL;
-		root = insert(elem, root);
+		insert(elem, &root);
 	}
 	printf("%u\n", (unsigned int)height(root));
 
