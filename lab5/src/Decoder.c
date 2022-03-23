@@ -39,12 +39,11 @@ void decode(FILE* out, FILE* in, int arg) {
 	size_t len = fread(buffer, 1, BUFSIZE, in);  // max tree space ~ 320B;
 	Node* tree = NULL;
 	size_t bytep = 0;
-	decodeTree(buffer, &bytep, 0, &tree);
-	memmove(buffer, buffer + (bytep + 1), len - (bytep + 1));
+	unsigned char mask = 0x80 >> decodeTree(buffer, &bytep, 0, &tree);
+	memmove(buffer, buffer + bytep, len - bytep);
 	if (BUFSIZE == len)
-		len = BUFSIZE - (bytep + 1) + fread(buffer + BUFSIZE - (bytep + 1), 1, bytep + 1, in);
+		len = BUFSIZE - bytep + fread(buffer + BUFSIZE - bytep, 1, bytep, in);
 	bytep = 0;
-	unsigned char mask = 0x80;
 	unsigned char outbuffer[BUFSIZE];
 	memset(outbuffer, 0, BUFSIZE);
 	for (size_t i = 0; i < count; ++i) {

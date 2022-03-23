@@ -67,12 +67,9 @@ static void onLeaf(Data* dt, const Node* cur) {
 	}
 }
 
-static void encodeMessage(FILE* out, FILE* in, char** codes) {
-	unsigned char	ibuf[BUFSIZE],
-					obuf[BUFSIZE];
-	memset(obuf, 0, BUFSIZE);
-	size_t	len = 0,
-			bp = 0;
+static void encodeMessage(FILE* out, FILE* in, char** codes, unsigned char* obuf, size_t bp) {
+	unsigned char	ibuf[BUFSIZE];
+	size_t	len = 0;
 	do {
 		len = fread(ibuf, 1, BUFSIZE, in);
 		for (size_t i = 0; i < len; ++i) {
@@ -98,8 +95,8 @@ static void encodeMessage(FILE* out, FILE* in, char** codes) {
 
 static void encodeFile(FILE* out, FILE* in, Node* tree, unsigned int count, int arg) {
 	Data data;
-	unsigned char buf[320];  // max tree space ~ 320B; 
-	memset(buf, 0, 320);
+	unsigned char buf[BUFSIZE];  // max tree space ~ 320B; 
+	memset(buf, 0, BUFSIZE);
 	data.buf = buf;
 	data.out = out;
 	data.bitp = 0;
@@ -117,12 +114,12 @@ static void encodeFile(FILE* out, FILE* in, Node* tree, unsigned int count, int 
 	
 	treeTraversal(tree, &data, onNode, onLeaf); // tree encoding + codes table
 	fwrite(data.buf, 1, data.bytep, out);
-	if (data.bitp != 0)
-		fputc(data.buf[data.bytep], out);
+	memmove(buf, buf + data.bytep, BUFSIZE - data.bytep);
+	memset(buf + BUFSIZE - data.bytep, 0, data.bytep);
 	free(data.currentCode);
 
 	fseek(in, (4 == arg) ? 0 : 1, SEEK_SET); // arg == argc from main; arg - global var
-	encodeMessage(out, in, codes);
+	encodeMessage(out, in, codes, buf, data.bitp);
 
 	for (size_t i = 0; i < 256; ++i)
 		free(data.codes[i]);  // NULL ptr will do nothing
