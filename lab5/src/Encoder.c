@@ -13,7 +13,6 @@ static Node* createTree(Node* elem, unsigned int* freq, unsigned int count) {
 	Node** list;
 	if (!(list = malloc(count * sizeof(Node*))))
 		exit(0);
-	*list = NULL;
 	for (size_t i = 0; i < count; ++i) {
 		elem->link[0] = NULL;
 		elem->link[1] = NULL;
@@ -28,7 +27,9 @@ static Node* createTree(Node* elem, unsigned int* freq, unsigned int count) {
 		freq[elem->value] = 0;
 		++elem;
 	}
-	for (size_t i = count - 1; i > 0; --i) {
+	size_t i = count;
+	while (i > 1) {
+		--i;
 		elem->link[0] = list[i];
 		elem->link[1] = list[i - 1];
 		elem->freq = list[i]->freq + list[i - 1]->freq;
@@ -43,7 +44,9 @@ static Node* createTree(Node* elem, unsigned int* freq, unsigned int count) {
 		}
 		++elem;
 	}
-	Node* tree = list[0];
+	Node* tree = NULL;
+	if (count > 0)
+		tree = list[0];
 	free(list);
 	return tree;
 }
@@ -134,7 +137,8 @@ static void encodeFile(FILE* out, FILE* in, Node* tree, unsigned int count, int 
 	if (NULL == currentCode) {
 		exit(0);
 	}
-	*currentCode = 0;
+	if (0 < count)
+		*currentCode = 0;
 	createCodes(codes, currentCode, tree, 0);
 	size_t bytep = 0,
 			bitp = 0;
