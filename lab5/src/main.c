@@ -11,13 +11,8 @@ int main(int argc, char** argv) {
 		in = fopen(argv[2], "rb");
 	}
 	else {
-#if 0
-		out = stdout;
-		in = stdin;
-#else
 		out = fopen("./out.txt", "wb");
 		in = fopen("./in.txt", "rb");
-#endif
 	}
 
 	int mode;
@@ -28,6 +23,8 @@ int main(int argc, char** argv) {
 		mode = fgetc(in);
 		if (EOF == mode) {
 			fputs("bad input", out);
+			fclose(in);
+			fclose(out);
 			return 0;
 		}
 	}
@@ -39,7 +36,6 @@ int main(int argc, char** argv) {
 		decode(out, in, argc);
 	}
 	fclose(in);
-	if (3 <= argc)
-		fclose(out);
+	fclose(out);
 	return 0;
 }
