@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "Archiver.h"
-#include "Huffman.h"
 
 static size_t decodeTree(unsigned char* buffer, size_t* bytep, size_t bitp, Node** cur) {
 	*cur = malloc(sizeof(Node));
@@ -26,10 +25,20 @@ static size_t decodeTree(unsigned char* buffer, size_t* bytep, size_t bitp, Node
 	return bitp;
 }
 
+static unsigned int readIntBytes(FILE* in) {
+	unsigned char buf[4];
+	fread(buf, 1, 4, in);
+	unsigned int res = 0;
+	res += (unsigned int)buf[0] << 24;
+	res += (unsigned int)buf[1] << 16;
+	res += (unsigned int)buf[2] << 8;
+	res += buf[3];
+	return res;
+}
+
 void decode(FILE* out, FILE* in, int arg) {
 	fseek(in, (4 == arg) ? 0 : 1, SEEK_SET);
-	unsigned int count = 0;
-	fread(&count, sizeof(unsigned int), 1, in);
+	unsigned int count = readIntBytes(in);
 	
 	if (0 == count) {
 		exit(0);

@@ -2,24 +2,49 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Archiver.h"
-#include "Huffman.h"
-
-typedef struct Data_st Data;
-struct Data_st {
-	FILE* out;
-	char** codes;
-	char* currentCode;
-	size_t codeIdx;
-	unsigned char* buf;
-	size_t bitp;
-	size_t bytep;
-};
 
 typedef struct Freq_st Freq;
 struct Freq_st {
 	unsigned int table[256];
 	unsigned int count;
 };
+
+static Node* createTree(Node* elem, unsigned int* freq, unsigned int count) {
+	Node** list;
+	if (!(list = malloc(count * sizeof(Node*))))
+		exit(0);
+	*list = NULL;
+	for (size_t i = 0; i < count; ++i) {
+		elem->link[0] = NULL;
+		elem->link[1] = NULL;
+		elem->freq = 0;
+		for (size_t j = 0; j < 256; ++j) {
+			if (freq[j] && (!elem->freq || freq[j] >= elem->freq)) {
+				elem->freq = freq[j];
+				elem->value = (unsigned char)j;
+				list[i] = elem;
+			}
+		}
+		freq[elem->value] = 0;
+		++elem;
+	}
+	for (size_t i = count - 1; i > 0; --i) {
+		elem->link[0] = list[i];
+		elem->link[1] = list[i - 1];
+		elem->freq = list[i]->freq + list[i - 1]->freq;
+		list[i - 1] = elem;
+		list[i] = NULL;
+		size_t j = i - 1;
+		while ((j != 0) && (list[j]->freq > list[j - 1]->freq)) {
+			Node* t = list[j - 1];
+			list[j - 1] = list[j];
+			list[j] = t;
+			--j;
+		}
+		++elem;
+	}
+	return list[0];
+}
 
 static unsigned int getFreq(Freq* freq, FILE* in) {
 	unsigned char buffer[BUFSIZE];
@@ -36,39 +61,8 @@ static unsigned int getFreq(Freq* freq, FILE* in) {
 	return count;
 }
 
-static void onNode(Data* dt) {
-	dt->buf[dt->bytep] |= 0x80u >> dt->bitp;
-	dt->bytep += (dt->bitp + 1) / 8;
-	dt->bitp = (dt->bitp + 1) % 8;
-
-	dt->currentCode[dt->codeIdx] = '0';
-	dt->currentCode[dt->codeIdx + 1] = 0;
-	++(dt->codeIdx);
-}
-
-static void onLeaf(Data* dt, const Node* cur) {
-	dt->bytep += (dt->bitp + 1) / 8;
-	dt->bitp = (dt->bitp + 1) % 8;	// writing 0
-	dt->buf[dt->bytep] |= cur->value >> dt->bitp;	// writing first part of value
-	++dt->bytep;
-	dt->buf[dt->bytep] = cur->value << (8 - dt->bitp);  // writing second part of byte
-
-	dt->codes[cur->value] = malloc(dt->codeIdx + 1);
-	if (NULL == dt->codes[cur->value])
-		exit(0);
-	memmove(dt->codes[cur->value], dt->currentCode, dt->codeIdx + 1);
-	size_t i = 0;
-	while (dt->currentCode[dt->codeIdx - i] != '0' && (0 < dt->codeIdx - i))
-		++i;
-	if ('0' == dt->currentCode[dt->codeIdx - i]) {
-		dt->currentCode[dt->codeIdx - i] = '1';
-		dt->currentCode[dt->codeIdx - i + 1] = 0;
-		dt->codeIdx -= i - 1;
-	}
-}
-
-static void encodeMessage(FILE* out, FILE* in, char** codes, unsigned char* obuf, size_t bp) {
-	unsigned char	ibuf[BUFSIZE];
+static void encodeMessage(FILE* out, FILE* in, char* codes[256], unsigned char obuf[BUFSIZE], size_t bp) {
+	unsigned char ibuf[BUFSIZE];
 	size_t	len = 0;
 	do {
 		len = fread(ibuf, 1, BUFSIZE, in);
@@ -93,36 +87,78 @@ static void encodeMessage(FILE* out, FILE* in, char** codes, unsigned char* obuf
 		fputc(obuf[bp / 8], out);
 }
 
+static void createCodes(char* codes[256], char* curCode, Node* curNode, size_t depth) {
+	if (NULL == curNode)
+		return;
+	if (NULL == curNode->link[0]) {
+		codes[curNode->value] = malloc(depth + 1);
+		if (NULL == codes[curNode->value])
+			exit(0);
+		memmove(codes[curNode->value], curCode, depth + 1);
+	}
+	else {
+		curCode[depth] = '0';
+		curCode[depth + 1] = 0;
+		createCodes(codes, curCode, curNode->link[0], depth + 1);
+		curCode[depth] = '1';
+		curCode[depth + 1] = 0;
+		createCodes(codes, curCode, curNode->link[1], depth + 1);
+	}
+}
+
+static void encodeTree(unsigned char buf[BUFSIZE], Node* curNode, size_t* bytep, size_t* bitp) {
+	if (NULL == curNode)
+		return;
+	if (NULL == curNode->link[0]) {
+		*bytep += (*bitp + 1) / 8;
+		*bitp = (*bitp + 1) % 8;	// writing 0
+		buf[*bytep] |= curNode->value >> *bitp;	// writing first part of value
+		++(*bytep);
+		buf[*bytep] = curNode->value << (8 - *bitp);  // writing second part of byte
+	}
+	else {
+		buf[*bytep] |= 0x80u >> *bitp;
+		*bytep += (*bitp + 1) / 8;
+		*bitp = (*bitp + 1) % 8;
+		encodeTree(buf, curNode->link[0], bytep, bitp);
+		encodeTree(buf, curNode->link[1], bytep, bitp);
+	}
+}
+
 static void encodeFile(FILE* out, FILE* in, Node* tree, unsigned int count, int arg) {
-	Data data;
-	unsigned char buf[BUFSIZE];  // max tree space ~ 320B; 
-	memset(buf, 0, BUFSIZE);
-	data.buf = buf;
-	data.out = out;
-	data.bitp = 0;
-	data.bytep = 0;
-	
 	char* codes[256];
-	data.codes = codes;
-	memset(data.codes, 0, sizeof(size_t) * 256);
-	data.codeIdx = 0;
-	data.currentCode = malloc(count);
-	if (NULL == data.currentCode) {
+	memset(codes, 0, sizeof(size_t) * 256);
+	char* currentCode = malloc(count);
+	if (NULL == currentCode) {
 		exit(0);
 	}
-	*data.currentCode = 0;
-	
-	treeTraversal(tree, &data, onNode, onLeaf); // tree encoding + codes table
-	fwrite(data.buf, 1, data.bytep, out);
-	memmove(buf, buf + data.bytep, BUFSIZE - data.bytep);
-	memset(buf + BUFSIZE - data.bytep, 0, data.bytep);
-	free(data.currentCode);
+	*currentCode = 0;
+	createCodes(codes, currentCode, tree, 0);
+	size_t bytep = 0,
+			bitp = 0;
+	free(currentCode);
+
+	unsigned char buf[BUFSIZE];  // max tree space ~ 320B; 
+	memset(buf, 0, BUFSIZE);
+	encodeTree(buf, tree, &bytep, &bitp);
+	fwrite(buf, 1, bytep, out);
+	memmove(buf, buf + bytep, BUFSIZE - bytep);
+	memset(buf + BUFSIZE - bytep, 0, bytep);
 
 	fseek(in, (4 == arg) ? 0 : 1, SEEK_SET); // arg == argc from main; arg - global var
-	encodeMessage(out, in, codes, buf, data.bitp);
+	encodeMessage(out, in, codes, buf, bitp);
 
 	for (size_t i = 0; i < 256; ++i)
-		free(data.codes[i]);  // NULL ptr will do nothing
+		free(codes[i]);  // NULL ptr will do nothing
+}
+
+static void writeIntBytes(unsigned int a, FILE* out) {
+	unsigned char buf[4];
+	buf[0] = (unsigned char)(a >> 24);
+	buf[1] = (unsigned char)(a >> 16);
+	buf[2] = (unsigned char)(a >> 8);
+	buf[3] = (unsigned char)a;
+	fwrite(buf, 1, 4, out);
 }
 
 void encode(FILE* out, FILE* in, int arg) {
@@ -130,7 +166,8 @@ void encode(FILE* out, FILE* in, int arg) {
 	freq.count = 0;
 	memset(freq.table, 0, sizeof(unsigned int) * 256);
 	unsigned int count = getFreq(&freq, in);
-	fwrite(&count, sizeof(unsigned int), 1, out);
+	writeIntBytes(count, out);
+	
 	Node* place = malloc(sizeof(Node) * (freq.count * 2 - 1));
 	if (NULL == place)
 		exit(0);
