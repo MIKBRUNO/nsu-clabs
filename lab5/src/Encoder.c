@@ -170,7 +170,7 @@ void encode(FILE* out, FILE* in, int arg) {
 	unsigned int count = getFreq(&freq, in);
 	writeIntBytes(count, out);
 	
-	Node* place = malloc(sizeof(Node) * (freq.count * 2 - 1));
+	Node* place = malloc(sizeof(Node) * freq.count * 2);
 	if (NULL == place)
 		exit(0);
 	Node* tree = createTree(place, freq.table, freq.count);
