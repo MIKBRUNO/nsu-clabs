@@ -43,7 +43,9 @@ static Node* createTree(Node* elem, unsigned int* freq, unsigned int count) {
 		}
 		++elem;
 	}
-	return list[0];
+	Node* tree = list[0];
+	free(list);
+	return tree;
 }
 
 static unsigned int getFreq(Freq* freq, FILE* in) {
