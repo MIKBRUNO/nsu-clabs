@@ -27,7 +27,7 @@ static size_t decodeTree(unsigned char* buffer, size_t* bytep, size_t bitp, Node
 
 static unsigned int readIntBytes(FILE* in) {
 	unsigned char buf[4];
-	if (fread(buf, 1, 4, in))
+	if (4 != fread(buf, 1, 4, in))
 		exit(0);
 	unsigned int res = 0;
 	res += (unsigned int)buf[0] << 24;
