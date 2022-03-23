@@ -44,7 +44,8 @@ static void freeTree(Node* tree) {
 		free(tree);
 	else {
 		freeTree(tree->link[0]);
-		freeTree(tree->link[0]);
+		freeTree(tree->link[1]);
+		free(tree);
 	}
 }
 
