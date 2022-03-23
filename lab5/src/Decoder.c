@@ -37,6 +37,17 @@ static unsigned int readIntBytes(FILE* in) {
 	return res;
 }
 
+static void freeTree(Node* tree) {
+	if (NULL == tree)
+		return;
+	if (NULL == tree->link[0])
+		free(tree);
+	else {
+		freeTree(tree->link[0]);
+		freeTree(tree->link[0]);
+	}
+}
+
 void decode(FILE* out, FILE* in, int arg) {
 	fseek(in, (4 == arg) ? 0 : 1, SEEK_SET);
 	unsigned int count = readIntBytes(in);
@@ -80,4 +91,6 @@ void decode(FILE* out, FILE* in, int arg) {
 		fwrite(outbuffer, 1, BUFSIZE, out);
 	else
 		fwrite(outbuffer, 1, count % BUFSIZE, out);
+
+	freeTree(tree);
 }
