@@ -5,23 +5,17 @@
 #include <string.h>
 #include "TopSort.h"
 
-int main(int argc, char* argv[]) {
-	FILE* in = stdin;
-	if (argc == 2) {
-		in = fopen(argv[1], "rt");
-		if (NULL == in)
-			return 0;
-	}
+int main(void) {
 	char buf[11];
 	int N = 0,
 		M = 0;
-	if (NULL == fgets(buf, 6, in)) {
+	if (NULL == fgets(buf, 6, stdin)) {
 		puts("bad number of lines");
 		return 0;
 	}
 	N = atoi(buf);
 
-	if (NULL == fgets(buf, 9, in)) {
+	if (NULL == fgets(buf, 9, stdin)) {
 		puts("bad number of lines");
 		return 0;
 	}
@@ -64,7 +58,7 @@ int main(int argc, char* argv[]) {
 	for (size_t i = 0; i < (size_t)M; ++i) {
 		int a,
 			b;
-		if (NULL == fgets(buf, 11, in)) {
+		if (NULL == fgets(buf, 11, stdin)) {
 			puts("bad number of lines");
 			free(table);
 			free(enter);
@@ -91,9 +85,6 @@ int main(int argc, char* argv[]) {
 	free(table);
 	free(enter);
 	free(passed);
-
-	if (2 == argc)
-		fclose(in);
 
 	return 0;
 }

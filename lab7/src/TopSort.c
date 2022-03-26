@@ -12,7 +12,7 @@ static void deleteNode(AdjTable* at, unsigned int node) {
 	size_t row = node * at->size;
 	for (size_t col = 0; col < at->size; ++col) {
 		if (0 != ((at->table)[(row + col) / 8] & (0x80 >> ((row + col) % 8))) && col != row) {
-			(at->table)[(row + col) / 8] &= (~0x80 >> ((row + col) % 8));
+			(at->table)[(row + col) / 8] &= (~0x80u >> ((row + col) % 8));
 			--(at->enterCount[col]);
 		}
 	}
