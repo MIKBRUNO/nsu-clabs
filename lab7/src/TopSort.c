@@ -41,7 +41,7 @@ static size_t writeUIntToBuf(unsigned int a, char* buffer) {
 }
 #endif
 
-void topSortAT(AdjTable* at, char* buf) {
+int topSortAT(AdjTable* at, char* buf) {
 	size_t passedCount = 0;
 	for (size_t count = 0; count < at->size; ++count) {
 		for (size_t i = 0; i < at->size; ++i) {
@@ -57,8 +57,9 @@ void topSortAT(AdjTable* at, char* buf) {
 		}
 		if (passedCount != count + 1) {
 			puts("impossible to sort");
-			exit(0);
+			return 0;
 		}
 	}
 	*buf = 0;
+	return 1;
 }

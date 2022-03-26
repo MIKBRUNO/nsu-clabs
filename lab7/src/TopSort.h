@@ -13,4 +13,4 @@ struct AdjTable_st {
 };
 
 void writeEdge(AdjTable* at, unsigned int frm, unsigned int to);
-void topSortAT(AdjTable* at, char* buffer);
+int topSortAT(AdjTable* at, char* buffer);

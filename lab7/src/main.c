@@ -66,12 +66,18 @@ int main(int argc, char* argv[]) {
 			b;
 		if (NULL == fgets(buf, 11, in)) {
 			puts("bad number of lines");
+			free(table);
+			free(enter);
+			free(passed);
 			return 0;
 		}
 		a = atoi(buf);
 		b = atoi(strchr(buf, ' ') + 1);
 		if (a < 1 || a > N || b < 1 || b > N) {
 			puts("bad vertex");
+			free(table);
+			free(enter);
+			free(passed);
 			return 0;
 		}
 		writeEdge(&at, (unsigned int)a - 1, (unsigned int)b - 1);
@@ -79,8 +85,8 @@ int main(int argc, char* argv[]) {
 
 	char buffer[9216];
 	memset(buffer, 0, 9216);
-	topSortAT(&at, buffer);
-	puts(buffer);
+	if (1 == topSortAT(&at, buffer))
+		puts(buffer);
 
 	free(table);
 	free(enter);
