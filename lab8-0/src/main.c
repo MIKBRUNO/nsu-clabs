@@ -97,5 +97,6 @@ int main(void) {
 
 	free(edges);
 	free(colors);
+	free(res);
 	return 0;
 }
