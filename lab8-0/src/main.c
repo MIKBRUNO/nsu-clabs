@@ -51,13 +51,13 @@ int main(void) {
 			return 0;
 		}
 		edges[i].v[0] = (unsigned short)atoi(buf) - 1;
-		if (0 > edges[i].v[0] || N - 1 < edges[i].v[0]) {
+		if (N - 1 < edges[i].v[0]) {
 			puts("bad vertex");
 			free(edges);
 			return 0;
 		}
 		edges[i].v[1] = (unsigned short)atoi(b1) - 1;
-		if (0 > edges[i].v[1] || N - 1 < edges[i].v[1]) {
+		if (N - 1 < edges[i].v[1]) {
 			puts("bad vertex");
 			free(edges);
 			return 0;
