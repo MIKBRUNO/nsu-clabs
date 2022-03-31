@@ -43,9 +43,14 @@ int main(void) {
 			free(edges);
 			return 0;
 		}
-		char* b1 = strchr(buf, ' ') + 1,
-			* b2 = strchr(b1, ' ') + 1;
-		if (NULL == b1 || NULL == b2) {
+		char* b1 = strchr(buf, ' ') + 1;
+		if (NULL == b1) {
+			puts("bad number of lines");
+			free(edges);
+			return 0;
+		}
+		char* b2 = strchr(b1, ' ') + 1;
+		if (NULL == b2) {
 			puts("bad number of lines");
 			free(edges);
 			return 0;
@@ -91,7 +96,7 @@ int main(void) {
 	int resCount = minSpanningTree(edges, M, colors, N, res);
 	if (-1 != resCount)
 		for (size_t i = 0; i < (size_t)resCount; i += 2)
-			printf("%u %u\n", res[i] + 1, res[i + 1] + 1);
+			printf("%u %u\n", res[i] + 1u, res[i + 1] + 1u);
 	else
 		puts("no spanning tree");
 
