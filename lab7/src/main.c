@@ -38,17 +38,14 @@ int main(void) {
 	memset(enter, 0, N * sizeof(unsigned int));
 	at.enterCount = enter;
 
-	unsigned int* passed = malloc(N * sizeof(unsigned int));
+	unsigned char* passed = malloc(N * sizeof(unsigned char));
 	if (NULL == passed)
 		return 0;
-	memset(passed, 0, N * sizeof(unsigned int));
+	memset(passed, 0, N * sizeof(unsigned char));
 	at.passed = passed;
 	
 	size_t byteSize;
-	if (0 == N % 8)
-		byteSize = (N * N) / 8;
-	else
-		byteSize = ((N * N) / 8) + 1;
+	byteSize = (N * N / 8) + (0 != N % 8);
 	unsigned char* table = malloc(byteSize * sizeof(unsigned char));
 	if (NULL == table)
 		return 0;
@@ -76,12 +73,19 @@ int main(void) {
 		}
 		writeEdge(&at, (unsigned int)a - 1, (unsigned int)b - 1);
 	}
-
+#if 0
 	char buffer[9216];
 	memset(buffer, 0, 9216);
 	if (1 == topSortAT(&at, buffer))
 		puts(buffer);
-
+#else
+	unsigned int buffer[2000];
+	memset(buffer, 0, 2000);
+	if (1 == topSortAT(&at, buffer))
+		for (size_t i = 0; i < (unsigned int)N; ++i) {
+			printf("%d ", buffer[i]);
+		}
+#endif
 	free(table);
 	free(enter);
 	free(passed);

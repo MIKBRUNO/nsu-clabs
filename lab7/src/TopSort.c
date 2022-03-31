@@ -12,13 +12,13 @@ static void deleteNode(AdjTable* at, unsigned int node) {
 	size_t row = node * at->size;
 	for (size_t col = 0; col < at->size; ++col) {
 		if (0 != ((at->table)[(row + col) / 8] & (0x80 >> ((row + col) % 8))) && col != row) {
-			(at->table)[(row + col) / 8] &= (~0x80u >> ((row + col) % 8));
-			--(at->enterCount[col]);
+			at->table[(row + col) / 8] &= ~0x80u >> ((row + col) % 8);
+			--at->enterCount[col];
 		}
 	}
 }
 
-#if 1
+#if 0
 static void reverse(char* str, size_t size) {
 	size_t i = 0;
 	while (i < size / 2) {
@@ -41,14 +41,13 @@ static size_t writeUIntToBuf(unsigned int a, char* buffer) {
 }
 #endif
 
-int topSortAT(AdjTable* at, char* buf) {
+int topSortAT(AdjTable* at, unsigned int* buf) {
 	size_t passedCount = 0;
 	for (size_t count = 0; count < at->size; ++count) {
 		for (size_t i = 0; i < at->size; ++i) {
 			if (at->enterCount[i] == 0 && at->passed[i] == NOT_PASSED) {
 				at->passed[i] = PASSED;
-				buf += writeUIntToBuf(i + 1, buf);
-				*buf = ' ';
+				*buf = i + 1;
 				++buf;
 				++passedCount;
 				deleteNode(at, i);
@@ -60,6 +59,5 @@ int topSortAT(AdjTable* at, char* buf) {
 			return 0;
 		}
 	}
-	*buf = 0;
 	return 1;
 }
