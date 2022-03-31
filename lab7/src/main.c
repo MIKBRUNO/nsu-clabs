@@ -83,7 +83,7 @@ int main(void) {
 	memset(buffer, 0, 2000 * sizeof(unsigned int));
 	if (1 == topSortAT(&at, buffer))
 		for (size_t i = 0; i < (unsigned int)N; ++i) {
-			printf("%d ", buffer[i]);
+			printf("%u ", buffer[i]);
 		}
 #endif
 	free(table);
