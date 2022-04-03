@@ -5,7 +5,7 @@
 #define INNER  0
 #define OUTER  1
 
-static void freePtrArr(void** parr, size_t count) {
+static void freePtrArr(Edge** parr, size_t count) {
 	if (NULL == parr)
 		return;
 	for (size_t i = 0; i < count; ++i)
