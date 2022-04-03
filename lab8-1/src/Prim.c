@@ -73,7 +73,7 @@ int minSpanningTree(int* adjm, unsigned short* res, size_t vcount) {
 					outEdges[v]->v[1] = v;
 					++oecount;
 				}
-				if ((int)outEdges[v]->weight <= adjm[minV * vcount + v])
+				if (outEdges[v]->weight <= (unsigned int)adjm[minV * vcount + v])
 					continue;
 
 				outEdges[v]->weight = adjm[minV * vcount + v];
