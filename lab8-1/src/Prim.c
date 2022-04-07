@@ -6,14 +6,6 @@
 #define INNER  0
 #define OUTER  1
 
-static void freePtrArr(Edge** parr, size_t count) {
-	if (NULL == parr)
-		return;
-	for (size_t i = 0; i < count; ++i)
-		if (NULL != parr[i])
-			free(parr[i]);
-}
-
 int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
 	if (0 == vcount)
 		return -1;
@@ -31,7 +23,9 @@ int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
 			outEdges[v] = malloc(sizeof(Edge));
 			if (NULL == outEdges[v]) {
 				puts("cant allocate");
-				freePtrArr(outEdges, vcount);
+				for (size_t v = 0; v < vcount; ++v)
+					if (NULL != outEdges[v])
+						free(outEdges[v]);
 				free(outEdges);
 				return -1;
 			}
@@ -45,7 +39,9 @@ int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
 	unsigned char* mark = malloc(vcount);
 	if (NULL == mark) {
 		puts("cant allocate");
-		freePtrArr(outEdges, vcount);
+		for (size_t v = 0; v < vcount; ++v)
+			if (NULL != outEdges[v])
+				free(outEdges[v]);
 		free(outEdges);
 		return -1;
 	}
@@ -72,7 +68,9 @@ int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
 					outEdges[v] = malloc(sizeof(Edge));
 					if (NULL == outEdges[v]) {
 						puts("cant allocate");
-						freePtrArr(outEdges, vcount);
+						for (size_t v = 0; v < vcount; ++v)
+							if (NULL != outEdges[v])
+								free(outEdges[v]);
 						free(outEdges);
 						return -1;
 					}
@@ -87,7 +85,9 @@ int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
 		}
 	}
 
-	freePtrArr(outEdges, vcount);
+	for (size_t v = 0; v < vcount; ++v)
+		if (NULL != outEdges[v])
+			free(outEdges[v]);
 	free(outEdges);
 
 	for (size_t v = 0; v < vcount; ++v)
