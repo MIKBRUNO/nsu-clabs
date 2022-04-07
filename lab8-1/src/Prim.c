@@ -9,7 +9,10 @@
 static void freePtrArr(Edge** parr, size_t count) {
 	if (NULL == parr)
 		return;
-	
+	for (size_t i = 0; i < count; ++i) {
+		if (NULL != parr[i])
+			free(parr[i]);
+	}
 }
 
 int minSpanningTree(int* adjm, FILE* res, size_t vcount) {
