@@ -1,4 +1,4 @@
-#define READ_FILE
+//#define READ_FILE
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
