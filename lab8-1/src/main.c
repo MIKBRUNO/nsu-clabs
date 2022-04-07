@@ -1,4 +1,3 @@
-#define READ_FILE
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -9,24 +8,10 @@
 
 #define BUFSIZE 1024
 
-static void cp(FILE* src, FILE* dst) {
-	char buffer[BUFSIZE];
-	size_t len = fread(buffer, 1, BUFSIZE, src);
-	while (0 != len) {
-		fwrite(buffer, 1, len, dst);
-		len = fread(buffer, 1, BUFSIZE, src);
-	}
-}
-
 int main(void) {
 	char buf[BUFSIZE];
 
-	FILE* in = stdin;
-#ifdef READ_FILE
-	in = fopen("in.txt", "rt");
-#endif
-
-	if (NULL == fgets(buf, BUFSIZE, in)) {
+	if (NULL == fgets(buf, BUFSIZE, stdin)) {
 		puts("bad number of lines");
 		return 0;
 	}
@@ -36,7 +21,7 @@ int main(void) {
 		return 0;
 	}
 
-	if (NULL == fgets(buf, BUFSIZE, in)) {
+	if (NULL == fgets(buf, BUFSIZE, stdin)) {
 		puts("bad number of lines");
 		return 0;
 	}
@@ -55,7 +40,7 @@ int main(void) {
 		adjm[i] = -1;
 
 	for (size_t i = 0; i < M; ++i) {
-		if (NULL == fgets(buf, BUFSIZE, in)) {
+		if (NULL == fgets(buf, BUFSIZE, stdin)) {
 			puts("bad number of lines");
 			free(adjm);
 			return 0;
