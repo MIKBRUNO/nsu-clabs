@@ -1,3 +1,4 @@
+#define READ_FILE
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -11,7 +12,12 @@
 int main(void) {
 	char buf[BUFSIZE];
 
-	if (NULL == fgets(buf, BUFSIZE, stdin)) {
+	FILE* in = stdin;
+#ifdef READ_FILE
+	in = fopen("in.txt", "rt");
+#endif
+
+	if (NULL == fgets(buf, BUFSIZE, in)) {
 		puts("bad number of lines");
 		return 0;
 	}
@@ -21,7 +27,7 @@ int main(void) {
 		return 0;
 	}
 
-	if (NULL == fgets(buf, BUFSIZE, stdin)) {
+	if (NULL == fgets(buf, BUFSIZE, in)) {
 		puts("bad number of lines");
 		return 0;
 	}
@@ -40,7 +46,7 @@ int main(void) {
 		adjm[i] = -1;
 
 	for (size_t i = 0; i < M; ++i) {
-		if (NULL == fgets(buf, BUFSIZE, stdin)) {
+		if (NULL == fgets(buf, BUFSIZE, in)) {
 			puts("bad number of lines");
 			free(adjm);
 			return 0;
