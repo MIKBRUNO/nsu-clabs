@@ -1,5 +1,6 @@
 #pragma once
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct Edge_st Edge;
 struct Edge_st {
@@ -7,4 +8,4 @@ struct Edge_st {
 	unsigned int weight;
 };
 
-int minSpanningTree(int* adjm, unsigned short* res, size_t vcount);
+int minSpanningTree(int* adjm, FILE* res, size_t vcount);

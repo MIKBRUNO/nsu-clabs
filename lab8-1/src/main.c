@@ -1,7 +1,5 @@
 #define READ_FILE
-#ifdef READ_FILE
 #define _CRT_SECURE_NO_WARNINGS
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +8,15 @@
 #include "Prim.h"
 
 #define BUFSIZE 1024
+
+static void cp(FILE* src, FILE* dst) {
+	char buffer[BUFSIZE];
+	size_t len = fread(buffer, 1, BUFSIZE, src);
+	while (0 != len) {
+		fwrite(buffer, 1, len, dst);
+		len = fread(buffer, 1, BUFSIZE, src);
+	}
+}
 
 int main(void) {
 	char buf[BUFSIZE];
@@ -40,8 +47,10 @@ int main(void) {
 	}
 
 	int* adjm = malloc(N * N * sizeof(int));
-	if (NULL == adjm)
+	if (NULL == adjm) {
+		puts("cant allocate");
 		return 0;
+	}
 	for (size_t i = 0; i < N * N; ++i)
 		adjm[i] = -1;
 
@@ -80,7 +89,7 @@ int main(void) {
 		adjm[v0 * N + v1] = atoi(b2);
 		if (0 > adjm[v0 * N + v1] ||
 			strlen(b2) > 11 ||
-			(strlen(b2) == 11 && strcmp("2147483647\n", b2) < 0) ){
+			(strlen(b2) == 11 && strcmp("2147483647\n", b2) < 0)) {
 			puts("bad length");
 			free(adjm);
 			return 0;
@@ -88,21 +97,14 @@ int main(void) {
 		adjm[v1 * N + v0] = adjm[v0 * N + v1];
 	}
 
-	unsigned short* res = malloc(2 * M * sizeof(unsigned short));
-	if (NULL == res) {
-		free(adjm);
-		return 0;
+	FILE* out = fopen("out.txt", "wt");
+	int resc = minSpanningTree(adjm, out, N);
+	if (-1 == resc) {
+		out = freopen("out.txt", "wt", out);
+		fputs("no spanning tree", out);
 	}
-	memset(res, 0, 2 * M * sizeof(unsigned short));
-
-	int resc = minSpanningTree(adjm, res, N);
-	if (-1 == resc)
-		puts("no spanning tree");
-	else
-		for (size_t i = 0; i < (size_t)resc; i += 2)
-			printf("%u %u\n", res[i] + 1, res[i + 1] + 1);
-
+	
+	fclose(out);
 	free(adjm);
-	free(res);
 	return 0;
 }
