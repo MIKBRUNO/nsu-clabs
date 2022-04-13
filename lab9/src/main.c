@@ -127,6 +127,7 @@ int main(void) {
 	if (ERR == res) {
 		free(adjm);
 		free(shortestPaths);
+		free(prevInPath);
 		return 0;
 	}
 
@@ -155,5 +156,6 @@ int main(void) {
 
 	free(adjm);
 	free(shortestPaths);
+	free(prevInPath);
 	return 0;
 }
