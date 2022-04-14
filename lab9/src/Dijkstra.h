@@ -4,9 +4,8 @@
 #define INF			-1
 
 #define ERR			-1
-#define NOPATH		-2
-#define OVERFLOW	-3
+#define OVERFLOW	-2
 
-int D_shortestPath(int* adjm, int* shortestPaths, unsigned short* path,
+int shortestPath_Dijkstra(int* adjm, int* shortestPaths, unsigned short* path,
 					unsigned int st, unsigned int fin,
 					unsigned int vcount);

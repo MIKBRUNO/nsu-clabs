@@ -4,17 +4,30 @@
 #include <limits.h>
 #include "Dijkstra.h"
 
-#define INNER  1
-#define OUTER  0
+#define VISITED		1
+#define NOT_VISITED	0
 
-static inline int calcPath(int path, int edge) {
-	if (OVER_INT_MAX == path || INT_MAX - path < edge)
+static int sum(int a, int b) {
+	if (INF == a || INF == b)
+		return INF;
+	if (OVER_INT_MAX == a || OVER_INT_MAX == b)
+		return OVER_INT_MAX;
+	else if (INT_MAX - a < b)
 		return OVER_INT_MAX;
 	else
-		return path + edge;
+		return a + b;
 }
 
-int D_shortestPath(int* adjm, int* shortestPaths, unsigned short* prevNodeTable,
+static cmp(int a, int b) {
+	if (INF == a || OVER_INT_MAX == a)
+		return 1;
+	else if (INF == b || OVER_INT_MAX == b)
+		return -1;
+	else
+		return a - b;
+}
+
+int shortestPath_Dijkstra(int* adjm, int* shortestPaths, unsigned short* prevNodeTable,
 					unsigned int st, unsigned int fin,
 					unsigned int vcount) {
 	unsigned char* mark = malloc(vcount);
@@ -22,48 +35,39 @@ int D_shortestPath(int* adjm, int* shortestPaths, unsigned short* prevNodeTable,
 		puts("cant allocate");
 		return ERR;
 	}
-	memset(mark, OUTER, vcount);
+	memset(mark, NOT_VISITED, vcount);
 
 	unsigned int altExist = 0;
 
-	unsigned int minV = st;
-	shortestPaths[minV] = 0;
-	prevNodeTable[minV] = minV;
-	while (OUTER == mark[minV]) {
-		mark[minV] = INNER;
+	unsigned int curV = st;
+	shortestPaths[curV] = 0;
+	prevNodeTable[curV] = curV;
+	while (NOT_VISITED == mark[curV]) {
+		mark[curV] = VISITED;
 
 		unsigned int altPathCount = 0;
 		for (unsigned int v = 0; v < vcount; ++v)
-			if (-1 != adjm[minV * vcount + v]) {
-				if (OUTER == mark[v]) {
-					int altPath = calcPath(shortestPaths[minV], adjm[minV * vcount + v]);
-					if (INF == shortestPaths[v] || OVER_INT_MAX == shortestPaths[v]
-						|| (OVER_INT_MAX != altPath && shortestPaths[v] > altPath))
-					{
-						prevNodeTable[v] = minV;
+			if (-1 != adjm[curV * vcount + v]) {
+				if (NOT_VISITED == mark[v]) {
+					int altPath = sum(shortestPaths[curV], adjm[curV * vcount + v]);
+					if (cmp(shortestPaths[v], altPath) > 0) {
+						prevNodeTable[v] = curV;
 						shortestPaths[v] = altPath;
 					}
 				}
-				else if (minV != v)
+				else if (curV != v)
 					altPathCount += 1;
 			}
 		if (1 < altPathCount)
 			altExist = 1;
 
 		for (unsigned int v = 0; v < vcount; ++v)
-			if (OUTER == mark[v] && INF != shortestPaths[v] &&
-				(INNER == mark[minV] || OVER_INT_MAX == shortestPaths[minV] ||
-					(OVER_INT_MAX != shortestPaths[v] && shortestPaths[v] < shortestPaths[minV])
-					)
-				) {
-				minV = v;
+			if (NOT_VISITED == mark[v] && INF != shortestPaths[v] &&
+				(VISITED == mark[curV] || cmp(shortestPaths[v], shortestPaths[curV]) < 0)) {
+				curV = v;
 			}
 	}
 
-	if (OUTER == mark[fin]) {
-		free(mark);
-		return NOPATH;
-	}
 	free(mark);
 	if (OVER_INT_MAX == shortestPaths[fin] && altExist) {
 		return OVERFLOW;

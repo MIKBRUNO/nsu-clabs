@@ -123,7 +123,7 @@ int main(void) {
 	}
 	memset(prevInPath, 0, (vcount * sizeof(unsigned short)));
 
-	int res = D_shortestPath(adjm, shortestPaths, prevInPath, st, fin, vcount);
+	int res = shortestPath_Dijkstra(adjm, shortestPaths, prevInPath, st, fin, vcount);
 	if (ERR == res) {
 		free(adjm);
 		free(shortestPaths);
@@ -141,7 +141,7 @@ int main(void) {
 
 	putc('\n', stdout);
 
-	if (NOPATH == res)
+	if (INF == shortestPaths[fin])
 		puts("no path");
 	else if (OVERFLOW == res)
 		puts("overflow");
