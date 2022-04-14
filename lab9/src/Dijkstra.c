@@ -18,7 +18,7 @@ static int sum(int a, int b) {
 		return a + b;
 }
 
-static cmp(int a, int b) {
+static int cmp(int a, int b) {
 	if (INF == a || OVER_INT_MAX == a)
 		return 1;
 	else if (INF == b || OVER_INT_MAX == b)
