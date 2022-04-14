@@ -32,12 +32,12 @@ int main(void) {
 	}
 	unsigned int st = (unsigned int)v0 - 1u;
 
-	char* b1 = strchr(buf, ' ') + 1;
+	char* b1 = strchr(buf, ' ');
 	if (NULL == b1) {
 		puts("bad number of lines");
 		return 0;
 	}
-	v1 = atoi(b1);
+	v1 = atoi(b1 + 1);
 	if ((int)vcount < v1 || 1 > v1) {
 		puts("bad vertex");
 		return 0;
